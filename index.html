@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R.M ENGINEERING COLLEGE - Student College Joining Details & Scholarship Eligibility Form</title>
+
+  <style>
+    body{
+      font-family: Arial;
+      background:#f2f2f2;
+    }
+    .container{
+      width:90%;
+      max-width:900px;
+      margin:auto;
+      background:white;
+      padding:20px;
+      border-radius:10px;
+    }
+    h1,h2{text-align:center;}
+    label{font-weight:bold;}
+    input,select,textarea,button{
+      width:100%;
+      padding:8px;
+      margin:6px 0;
+    }
+    button{
+      background:#004aad;
+      color:white;
+      border:none;
+      font-size:16px;
+      cursor:pointer;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    th,td{
+      border:1px solid black;
+      padding:6px;
+      text-align:center;
+    }
+    td:first-child{
+      text-align:left;
+      font-weight:bold;
+    }
+    .marks-table th{
+      background:#f9f9f9;
+    }
+    .popup{
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.7);
+    }
+    .popup-content{
+      background:white;
+      width:60%;
+      margin:15% auto;
+      padding:30px;
+      text-align:center;
+      font-size:28px;
+      border-radius:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container" id="studentForm">
+
+  <h1>R.M ENGINEERING COLLEGE</h1>
+  <h2>Student College Joining Details & Scholarship Eligibility Form</h2>
+
+  <label>Student Name</label>
+  <input id="name">
+
+  <label>Register Number</label>
+  <input id="regno">
+
+  <label>Date of Birth</label>
+  <input type="date" id="dob">
+
+  <label>Gender</label>
+  <select id="gender">
+    <option>Male</option>
+    <option>Female</option>
+  </select>
+
+  <label>Mobile Number</label>
+  <input id="mobile">
+
+  <label>Email ID</label>
+  <input type="email" id="email">
+
+  <label>Course</label>
+  <select id="course">
+    <option>B.E Computer Science Engineering</option>
+    <option>B.Tech AI & Data Science</option>
+    <option>B.E Mechanical Engineering</option>
+    <option>B.E Civil Engineering</option>
+  </select>
+
+  <label>Name of School</label>
+  <input id="school">
+
+  <label>School Location (City / District)</label>
+  <input id="location">
+
+  <label>Board of Examination</label>
+  <select id="board">
+    <option>State Board</option>
+    <option>CBSE</option>
+    <option>ICSE</option>
+    <option>NIOS</option>
+  </select>
+
+  <label>Caste</label>
+  <input id="caste">
+
+  <h3>12th Standard Subject-wise Percentage Category (HSC)</h3>
+
+  <table class="marks-table">
+    <tr>
+      <th></th>
+      <th>50 Mark below</th>
+      <th>60 Mark & 70 Mark</th>
+      <th>80 Mark & 90 Mark</th>
+      <th>90 Above</th>
+    </tr>
+    <tr>
+      <td>Mathematics</td>
+      <td><input type="radio" name="math" value="low"></td>
+      <td><input type="radio" name="math" value="mid"></td>
+      <td><input type="radio" name="math" value="high"></td>
+      <td><input type="radio" name="math" value="high"></td>
+    </tr>
+    <tr>
+      <td>Physics</td>
+      <td><input type="radio" name="phy" value="low"></td>
+      <td><input type="radio" name="phy" value="mid"></td>
+      <td><input type="radio" name="phy" value="high"></td>
+      <td><input type="radio" name="phy" value="high"></td>
+    </tr>
+    <tr>
+      <td>Chemistry</td>
+      <td><input type="radio" name="chem" value="low"></td>
+      <td><input type="radio" name="chem" value="mid"></td>
+      <td><input type="radio" name="chem" value="high"></td>
+      <td><input type="radio" name="chem" value="high"></td>
+    </tr>
+  </table>
+
+  <br>
+  <button onclick="submitForm()">Submit Registration</button>
+  <br><br>
+  <button onclick="openAdmin()">Admin Login</button>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content" id="popupText"></div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="container" id="adminPanel" style="display:none;">
+  <h2>ADMIN DASHBOARD</h2>
+
+  <button onclick="downloadExcel()">Download Excel</button>
+
+  <table id="adminTable">
+    <tr>
+      <th>Name</th>
+      <th>Reg No</th>
+      <th>Course</th>
+      <th>Scholarship</th>
+    </tr>
+  </table>
+</div>
+
+<script>
+let students=[];
+
+function getMark(sub){
+  let r=document.getElementsByName(sub);
+  for(let i of r){ if(i.checked) return i.value; }
+}
+
+function submitForm(){
+  let name=document.getElementById("name").value;
+
+  let eligible =
+    getMark("math")==="high" &&
+    getMark("phy")==="high" &&
+    getMark("chem")==="high";
+
+  let msg = eligible
+    ? "🎉 "+name+"<br>YOU ARE ELIGIBLE FOR 7.5% SCHOLARSHIP"
+    : "❌ "+name+"<br>NOT ELIGIBLE FOR SCHOLARSHIP";
+
+  document.getElementById("popupText").innerHTML=msg;
+  document.getElementById("popup").style.display="block";
+
+  students.push({
+    name:name,
+    reg:document.getElementById("regno").value,
+    course:document.getElementById("course").value,
+    status: eligible?"Eligible":"Not Eligible"
+  });
+
+  setTimeout(()=>{document.getElementById("popup").style.display="none";},4000);
+}
+
+function openAdmin(){
+  let u=prompt("Username");
+  let p=prompt("Password");
+
+  if(u==="rmec" && p==="admin123"){
+    document.getElementById("studentForm").style.display="none";
+    document.getElementById("adminPanel").style.display="block";
+    loadAdmin();
+  }else{
+    alert("Wrong login");
+  }
+}
+
+function loadAdmin(){
+  let t=document.getElementById("adminTable");
+  students.forEach(s=>{
+    let r=t.insertRow();
+    r.insertCell(0).innerText=s.name;
+    r.insertCell(1).innerText=s.reg;
+    r.insertCell(2).innerText=s.course;
+    r.insertCell(3).innerText=s.status;
+  });
+}
+
+function downloadExcel(){
+  let csv="Name,Register No,Course,Scholarship\n";
+  students.forEach(s=>{
+    csv+=`${s.name},${s.reg},${s.course},${s.status}\n`;
+  });
+  let b=new Blob([csv],{type:"text/csv"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(b);
+  a.download="RMEC_Students.csv";
+  a.click();
+}
+</script>
+
+</body>
+</html>
+# student-registrationindex.html
