@@ -18,7 +18,7 @@
     }
     h1,h2{text-align:center;}
     label{font-weight:bold;}
-    input,select,textarea,button{
+    input,select,button{
       width:100%;
       padding:8px;
       margin:6px 0;
@@ -122,8 +122,18 @@
     <option>NIOS</option>
   </select>
 
+  <!-- ✅ CASTE LIST -->
   <label>Caste</label>
-  <input id="caste">
+  <select id="caste">
+    <option value="">-- Select Caste --</option>
+    <option>OC (Open Category)</option>
+    <option>BC (Backward Class)</option>
+    <option>BCM (Backward Class - Muslim)</option>
+    <option>MBC / DNC (Most Backward Class)</option>
+    <option>SC (Scheduled Caste)</option>
+    <option>SCA (Scheduled Caste - Arunthathiyar)</option>
+    <option>ST (Scheduled Tribe)</option>
+  </select>
 
   <h3>12th Standard Marks (Select Category)</h3>
 
@@ -233,7 +243,7 @@ function openAdmin(){
 
 function loadAdmin(){
   let t=document.getElementById("adminTable");
-  t.innerHTML = `
+  t.innerHTML=`
     <tr>
       <th>Name</th>
       <th>Reg No</th>
