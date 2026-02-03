@@ -10,7 +10,7 @@
     }
     .container{
       width:95%;
-      max-width:1000px;
+      max-width:1100px;
       margin:auto;
       background:white;
       padding:20px;
@@ -34,16 +34,14 @@
       width:100%;
       border-collapse:collapse;
       margin-top:10px;
+      font-size:14px;
     }
     th,td{
       border:1px solid black;
       padding:6px;
       text-align:center;
     }
-    td:first-child{
-      text-align:left;
-      font-weight:bold;
-    }
+    th{background:#e8e8e8;}
     .popup{
       display:none;
       position:fixed;
@@ -57,7 +55,7 @@
       margin:15% auto;
       padding:40px;
       text-align:center;
-      font-size:30px;
+      font-size:28px;
       border-radius:10px;
     }
     .logo{
@@ -72,8 +70,7 @@
 
 <div class="container" id="studentForm">
 
-  <!-- LOGO -->
-  <img src="college logo.jpg" class="logo" alt="RM Engineering College Logo">
+  <img src="college logo.jpg" class="logo">
 
   <h1>R.M ENGINEERING COLLEGE</h1>
   <h2>Student College Joining Details & Scholarship Eligibility Form</h2>
@@ -122,20 +119,18 @@
     <option>NIOS</option>
   </select>
 
-  <!-- ✅ CASTE LIST -->
   <label>Caste</label>
   <select id="caste">
-    <option value="">-- Select Caste --</option>
-    <option>OC (Open Category)</option>
-    <option>BC (Backward Class)</option>
-    <option>BCM (Backward Class - Muslim)</option>
-    <option>MBC / DNC (Most Backward Class)</option>
-    <option>SC (Scheduled Caste)</option>
-    <option>SCA (Scheduled Caste - Arunthathiyar)</option>
-    <option>ST (Scheduled Tribe)</option>
+    <option>OC</option>
+    <option>BC</option>
+    <option>BCM</option>
+    <option>MBC / DNC</option>
+    <option>SC</option>
+    <option>SCA</option>
+    <option>ST</option>
   </select>
 
-  <h3>12th Standard Marks (Select Category)</h3>
+  <h3>12th Marks Category</h3>
 
   <table>
     <tr>
@@ -168,29 +163,17 @@
   <button onclick="submitForm()">Submit Registration</button>
   <br><br>
   <button onclick="openAdmin()">Admin Login</button>
-
 </div>
 
-<!-- POPUP -->
 <div class="popup" id="popup">
   <div class="popup-content" id="popupText"></div>
 </div>
 
-<!-- ADMIN PANEL -->
 <div class="container" id="adminPanel" style="display:none;">
   <h2>ADMIN DASHBOARD</h2>
-
   <button onclick="downloadExcel()">Download Excel</button>
 
-  <table id="adminTable">
-    <tr>
-      <th>Name</th>
-      <th>Reg No</th>
-      <th>Course</th>
-      <th>Caste</th>
-      <th>Scholarship</th>
-    </tr>
-  </table>
+  <table id="adminTable"></table>
 </div>
 
 <script>
@@ -202,73 +185,68 @@ function getMark(sub){
 }
 
 function submitForm(){
-  let name=document.getElementById("name").value;
-  let caste=document.getElementById("caste").value;
-
   let eligible =
     getMark("math")==="high" &&
     getMark("phy")==="high" &&
     getMark("chem")==="high";
 
-  let msg = eligible
-    ? "🎉 "+name+"<br>YOU ARE ELIGIBLE FOR 7.5% SCHOLARSHIP"
-    : "❌ "+name+"<br>NOT ELIGIBLE FOR SCHOLARSHIP";
+  let name=document.getElementById("name").value;
 
-  document.getElementById("popupText").innerHTML=msg;
+  document.getElementById("popupText").innerHTML =
+    eligible
+    ? "🎉 "+name+"<br>ELIGIBLE FOR 7.5% SCHOLARSHIP"
+    : "❌ "+name+"<br>NOT ELIGIBLE";
+
   document.getElementById("popup").style.display="block";
 
   students.push({
-    name:name,
-    reg:document.getElementById("regno").value,
-    course:document.getElementById("course").value,
-    caste:caste,
+    name,
+    reg:regno.value,
+    dob:dob.value,
+    gender:gender.value,
+    mobile:mobile.value,
+    email:email.value,
+    course:course.value,
+    school:school.value,
+    location:location.value,
+    board:board.value,
+    caste:caste.value,
     status: eligible?"Eligible":"Not Eligible"
   });
 
-  setTimeout(()=>{document.getElementById("popup").style.display="none";},4000);
+  setTimeout(()=>popup.style.display="none",4000);
 }
 
 function openAdmin(){
-  let u=prompt("Username");
-  let p=prompt("Password");
-
-  if(u==="rmec" && p==="admin123"){
-    document.getElementById("studentForm").style.display="none";
-    document.getElementById("adminPanel").style.display="block";
+  if(prompt("Username")==="rmec" && prompt("Password")==="admin123"){
+    studentForm.style.display="none";
+    adminPanel.style.display="block";
     loadAdmin();
-  }else{
-    alert("Wrong login");
-  }
+  }else alert("Wrong Login");
 }
 
 function loadAdmin(){
-  let t=document.getElementById("adminTable");
+  let t=adminTable;
   t.innerHTML=`
-    <tr>
-      <th>Name</th>
-      <th>Reg No</th>
-      <th>Course</th>
-      <th>Caste</th>
-      <th>Scholarship</th>
-    </tr>`;
+<tr>
+<th>Name</th><th>Reg No</th><th>DOB</th><th>Gender</th>
+<th>Mobile</th><th>Email</th><th>Course</th>
+<th>School</th><th>Location</th><th>Board</th>
+<th>Caste</th><th>Scholarship</th>
+</tr>`;
   students.forEach(s=>{
     let r=t.insertRow();
-    r.insertCell(0).innerText=s.name;
-    r.insertCell(1).innerText=s.reg;
-    r.insertCell(2).innerText=s.course;
-    r.insertCell(3).innerText=s.caste;
-    r.insertCell(4).innerText=s.status;
+    Object.values(s).forEach(v=>r.insertCell().innerText=v);
   });
 }
 
 function downloadExcel(){
-  let csv="Name,Register No,Course,Caste,Scholarship\n";
+  let csv="Name,RegNo,DOB,Gender,Mobile,Email,Course,School,Location,Board,Caste,Scholarship\n";
   students.forEach(s=>{
-    csv+=`${s.name},${s.reg},${s.course},${s.caste},${s.status}\n`;
+    csv+=Object.values(s).join(",")+"\n";
   });
-  let b=new Blob([csv],{type:"text/csv"});
   let a=document.createElement("a");
-  a.href=URL.createObjectURL(b);
+  a.href=URL.createObjectURL(new Blob([csv]));
   a.download="RMEC_Students.csv";
   a.click();
 }
